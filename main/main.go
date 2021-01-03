@@ -3,6 +3,7 @@ package main
 import (
 	"crawl/main/engine"
 	"crawl/main/parse"
+	"crawl/main/schedule"
 )
 
 func main() {
@@ -10,13 +11,13 @@ func main() {
 		Url:       "https://book.douban.com",
 		ParseFunc: parse.Content,
 	}
-	
+
 	concurrentEngine := engine.ConcurrentEngine{
 		WorkCount: 100,
-		Schedule:  &engine.SimpleSchedule{},
+		Schedule:  &schedule.SimpleSchedule{},
 	}
 	concurrentEngine.Run(request)
-	
+
 	//new(engine.SimpleEngine).Run(request)
-	
+
 }
