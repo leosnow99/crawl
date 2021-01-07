@@ -2,24 +2,23 @@ package engine
 
 import (
 	"crawl/main/fetcher"
-	"crawl/main/schedule"
 	"fmt"
 	"log"
 )
 
 type ConcurrentEngine struct {
 	WorkCount int
-	Schedule  schedule.Schedule
+	Schedule  Schedule
 }
 
 func (e *ConcurrentEngine) Run(seeds ...Request) {
-	in := make(chan Request)
 	out := make(chan ParseResult)
 
-	e.Schedule.ConfigureWorkChan(in)
+	//调度器开始工作
+	e.Schedule.Run()
 
 	for i := 0; i < e.WorkCount; i++ {
-		CreateWork(in, out)
+		CreateWork(e.Schedule.WorkChan(), out, e.Schedule)
 	}
 
 	for _, request := range seeds {
@@ -39,9 +38,10 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 	}
 }
 
-func CreateWork(in chan Request, out chan ParseResult) {
+func CreateWork(in chan Request, out chan ParseResult, s Schedule) {
 	go func() {
 		for {
+			s.WorkReady(in)
 			request := <-in
 			result, err := worker(request)
 			if err != nil {

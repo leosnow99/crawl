@@ -7,12 +7,12 @@ type QueueSchedule struct {
 	workChan    chan chan engine.Request
 }
 
-func (q *QueueSchedule) Submit(request engine.Request) {
-	panic("implement me")
+func (q *QueueSchedule) WorkChan() chan engine.Request {
+	return make(chan engine.Request)
 }
 
-func (q *QueueSchedule) ConfigureWorkChan(requests chan engine.Request) {
-	q.requestChan = requests
+func (q *QueueSchedule) Submit(request engine.Request) {
+	q.requestChan <- request
 }
 
 func (q *QueueSchedule) WorkReady(w chan engine.Request) {
@@ -21,6 +21,7 @@ func (q *QueueSchedule) WorkReady(w chan engine.Request) {
 
 func (q *QueueSchedule) Run() {
 	q.workChan = make(chan chan engine.Request)
+	q.requestChan = make(chan engine.Request)
 	go func() {
 		var requestQ []engine.Request
 		var workQ []chan engine.Request

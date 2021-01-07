@@ -13,8 +13,8 @@ func main() {
 	}
 
 	concurrentEngine := engine.ConcurrentEngine{
-		WorkCount: 100,
-		Schedule:  &schedule.SimpleSchedule{},
+		WorkCount: 30,
+		Schedule:  &schedule.QueueSchedule{},
 	}
 	concurrentEngine.Run(request)
 

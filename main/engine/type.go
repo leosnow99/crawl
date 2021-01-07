@@ -13,3 +13,10 @@ type Request struct {
 func NilParse(data []byte) ParseResult {
 	return ParseResult{}
 }
+
+type Schedule interface {
+	Submit(Request)
+	Run()
+	WorkReady(chan Request)
+	WorkChan() chan Request
+}
